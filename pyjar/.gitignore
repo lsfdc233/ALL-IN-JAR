@@ -1,0 +1,11 @@
+# Gradle 构建产物
+build/
+.gradle/
+
+# 本机 IDE
+.idea/
+*.iml
+.vscode/
+
+# 运行期状态(各 jar 同级的依赖区, 随项目分发而非入库)
+site-packages/
