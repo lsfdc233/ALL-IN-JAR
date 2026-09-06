@@ -2,16 +2,16 @@
  * pyjar 构建脚本: 把独立 CPython 发行包 + 启动器打成 python.jar
  *
  * 用法:
- *   .\gradlew.bat distJar        # 产出 python.jar 到项目根目录
- *   .\gradlew.bat clean distJar  # 干净重建
+ *   .\gradlew.bat jar             # 产出 python.jar 到项目根目录
+ *   .\gradlew.bat clean jar       # 干净重建
  *
  * 任务链:
  *   fetchPython  ->  下载独立 CPython 发行包(已存在则跳过, 缓存于 build/downloads)
- *   unpackPython ->  tar 解压
- *   flattenPython->  定位运行时根目录, 摊平到 build/stage/runtimes/<platform>,
+ *   unpackPython ->  tar 解压到 build/extract
+ *   flattenPython->  定位 python 安装根, 摊平到 build/stage/runtimes/<platform>,
  *                    并写入 pyjar/runtime-version.txt
- *   jar          ->  编译启动器(目标 JVM 17)并把 stage 内容一起打包
- *   distJar      ->  把 build/libs/python.jar 复制到项目根目录(交付物)
+ *   jar          ->  编译启动器(字节码目标 17)并把 stage 内容一起打包,
+ *                    直接产出项目根目录的 python.jar
  */
 import org.gradle.api.tasks.Exec
 
@@ -26,10 +26,6 @@ val pythonArchive = layout.buildDirectory.file("downloads/$asset").get().asFile
 
 plugins {
     java
-}
-
-java {
-    // 本机 JDK 21 运行构建; 产出的字节码保持 17, 与"只需一个 JVM"的定位一致
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -62,7 +58,7 @@ val unpackPython = tasks.register<Exec>("unpackPython") {
     commandLine("tar", "-xf", pythonArchive.toString(), "-C", layout.buildDirectory.dir("extract").get().asFile.toString())
 }
 
-// 3/5 摊平: 找到运行时根目录, 复制为 runtimes/<platform>, 写入版本标记
+// 3/5 摊平: 找到 python 安装根, 复制为 runtimes/<platform>, 写入版本标记
 val flattenPython = tasks.register<Copy>("flattenPython") {
     group = "pyjar"
     description = "把 CPython 运行时摊平到 runtimes/<platform> 布局"

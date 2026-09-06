@@ -10,9 +10,10 @@
 
 ```bash
 java -jar python.jar --version
-java -jar python.jar main.py                 # 跑脚本, 参数原样透传
-java -jar python.jar -m pip install requests # 装包
-java -jar python.jar                         # 进入交互式 REPL
+java -jar python.jar main.py                 
+java -jar python.jar -m pip install requests
+java -jar python.jar pip install requests    
+java -jar python.jar                         
 ```
 
 ## 包放哪里
@@ -40,8 +41,6 @@ python.jar (zip)
 ```powershell
 .\gradlew.bat jar        
 ```
-
-任务链(`gradlew.bat tasks` 可查看全部):
 
 
 

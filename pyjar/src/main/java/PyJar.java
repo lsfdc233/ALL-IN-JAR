@@ -56,6 +56,13 @@ public class PyJar {
             passthrough.add(a);
         }
 
+        // 便捷别名: java -jar python.jar pip install X  ==  python -m pip install X
+        // (若当前目录真有叫 pip 的脚本, 用 ./pip 显式路径即可绕过)
+        if (!passthrough.isEmpty() && (passthrough.get(0).equals("pip") || passthrough.get(0).equals("pip3"))) {
+            passthrough.set(0, "-m");
+            passthrough.add(1, "pip");
+        }
+
         String platform = platform();
         String version = readEmbeddedText("/pyjar/runtime-version.txt", "unknown");
         dbg("platform=" + platform + " version=" + version);
